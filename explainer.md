@@ -6,7 +6,7 @@ mark a. foltz [<mfoltz@google.com>](mailto:mfoltz@google.com)
 
 ## Participate
 
-- [Latest Draft](https://mfoltzgoogle.github.io/tab-self-mirroring/explainer.md)
+- [Latest Draft](https://mfoltzgoogle.github.io/tab-self-mirroring/explainer.html)
 - [GitHub Repository](https://github.com/mfoltzgoogle/tab-self-mirroring)
 - [File an Issue](https://github.com/mfoltzgoogle/tab-self-mirroring/issues)
 
