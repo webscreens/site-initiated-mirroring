@@ -2,7 +2,8 @@
 
 ## Authors
 
-mark a. foltz [<mfoltz@google.com>](mailto:mfoltz@google.com)
+mark a. foltz [@mfoltzgoogle](https://github.com/mfoltzgoogle)
+[<mfoltz@google.com>](mailto:mfoltz@google.com)
 
 ## Participate
 
@@ -72,8 +73,8 @@ latency of the mirroring connection is reduced (to improve A/V sync).
 
 The user wishes to present a slide deck to a smart projector.  Using UI in the
 page they switch the slide deck to presentation mode, and select the smart
-projector as the target.  The presentation mode audio and video are mirrored to
-the smart projector.
+projector as the target.  The presentation's audio and video are mirrored to the
+smart projector.
 
 ### Sample Code
 
@@ -156,7 +157,7 @@ enum AudioPlaybackDestination { "remote", "local" };
 
 There are several open questions to address:
 
-1. Whether navigation in the tab, within the same origin to a different origin,
+1. Whether navigation in the tab, within the same origin or to a different origin,
 should terminate the mirroring session.
 1. Whether this API should be restricted to top-level frames.
 1. Whether there's a use case to play audio out locally and remotely at the same
@@ -176,7 +177,7 @@ remote displays is stated as a non-goal of that proposal.  It's also unclear if
 mirroring existing windows is in scope for the Window Placement API.
 
 If the scope of this API were expanded to include these additional capabilities,
-could be another way to support these use cases.
+it could be another way to support these use cases.
 
 ### Extend getDisplayMedia()
 
@@ -185,16 +186,16 @@ could possibly be extended to support these scenarios.  However, this would
 currently require double prompting - first to allow tab capture, and then to
 give permission to stream it to another display.
 
-There is also no API surface that allows a MediaStream to be streamed directly
-to a secondary display.  Because a MediaStream can represent a variety of frame
-sources, it would be difficult to implement an API that could successfully send
-an arbitrary MediaStream to a secondary display.
+There is also no API that allows a MediaStream to be sent directly to a
+secondary display (without going through WebRTC).  Because a MediaStream can
+represent a variety of frame sources, it would be difficult to implement an API
+that could successfully send an arbitrary MediaStream to a secondary display.
 
 ### Add a new API
 
 Another alternative would be to add a new global API to control this behavior,
-like `requestFullscreen()`.  It would end up sharing many similarities to the
-Presentation API, but 
+like `requestFullscreen()`.  It would end up duplicating many aspects of the
+Presentation API.
 
 ## Stakeholder Feedback / Opposition
 
