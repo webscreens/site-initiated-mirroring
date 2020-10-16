@@ -3,6 +3,7 @@
 ## Authors
 
 mark a. foltz [@mfoltzgoogle](https://github.com/mfoltzgoogle)
+
 [<mfoltz@google.com>](mailto:mfoltz@google.com)
 
 ## Participate
