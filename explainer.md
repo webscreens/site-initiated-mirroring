@@ -19,11 +19,10 @@ secondary display.  They will be allowed to request customization of the
 mirroring implementation in certain respects.
 
 There exist two APIs to allow Web sites to share content with a seconary
-display.  The first, the [Presentation
-API](https://w3c.github.io/presentation-api/), allows the site to request the
-secondary display show an entirely new document.  The second, the [Remote
-Playback API](https://w3c.github.io/remote-playback/), allows a single video
-element to be shown on a secondary display.
+display.  The [Presentation API](https://w3c.github.io/presentation-api/) allows
+the site to request the secondary display show an entirely new document.  The
+[Remote Playback API](https://w3c.github.io/remote-playback/) allows a single
+video element to be shown on a secondary display.
 
 We've found there are use cases for allowing a site to request that its existing
 content be shown on another display.  This presentation mode is currently being
