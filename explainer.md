@@ -76,6 +76,8 @@ page they switch the slide deck to presentation mode, and select the smart
 projector as the target.  The presentation's audio and video are mirrored to the
 smart projector.
 
+## Detailed design discussion
+
 ### Sample Code
 
 ```javascript
@@ -133,8 +135,6 @@ function configureConnection(newConnection, params) {
 // TODO: Show an example of how that can be done.
 ```
 
-## Detailed design discussion
-
 ### IDL
 
 ```
@@ -168,6 +168,75 @@ time.
 1. How to handle messaging.
 
 ## Considered alternatives
+
+### Extend the Remote Playback API
+
+The [Remote Playback API](https://w3c.github.io/remote-playback/) is another 
+API that allows media contents to be played on a secondary display. Since it 
+currently only supports the playback of media elements, it would need to be 
+extended to allow the remote playback of entire tab contents.
+
+Arguments in favor of extending the Remote Playback API:
+1. Sending a mirroring stream is arguably conceptually closer to Remote 
+Playback than Presentation, given the latter is about setting up a separate 
+receiver page and bidirectional communication between the controller and the 
+receiver pages.
+1. Configuring latency and audio playback does not apply to the existing use of 
+Presentation API, but it can for the existing use of Remote Playback.
+
+Arguments against it:
+1. In the existing Remote Playback, we halt the local playback when it gets 
+activated, so that'd be inconsistent with self-mirroring, in which playback 
+happens simultaneously on both displays.
+1. Remote Playback is intended for media playback, and mirroring a page 
+is arguably conceptually different.
+
+Some implications of extending the Remote Playback API:
+1. It would mean that the user agent would let the page know whenever it’s 
+being tab mirrored (via `document.remote.onconnect`), even when mirroring is 
+initiated via the user agent's UI.
+1. If both `document.remote.remote` and `navigator.presentation.defaultRequest` 
+are set, and the user agent's secondary display picker is shared between the 
+Remote Playback and Presentation APIs, one API would need to be chosen as the 
+default when the picker is shown through the user agent's UI (i.e. not through 
+`RemotePlayback#prompt()` or `PresentationRequest#start()`).
+
+#### Sample code
+```javascript
+// Mirroring can be initiated either via prompt() or via the UA's native UI.
+document.querySelector('#mirrorBtn').addEventListener('click', () => {
+  document.remote.prompt();
+});
+
+document.remote.addEventListener('connect', event => {
+  if (event.target.captureParams) {
+    document.remote.captureParams.latencyHint = 'low';
+    document.remote.captureParams.audioPlayback = 'local';
+  }
+});
+```
+
+#### IDL
+```
+partial interface Document {
+  attribute RemotePlayback remote;
+};
+
+partial interface RemotePlayback {
+  attribute CaptureParameters? captureParams;
+};
+
+// The below is the same as in the Presentation API proposal.
+
+dictionary CaptureParameters {
+  CaptureLatency latencyHint = 'default';
+  AudioPlaybackDestination audioPlayback = 'remote';
+};
+
+enum CaptureLatency { "default", "high", "low" };
+
+enum AudioPlaybackDestination { "remote", "local" };
+```
 
 ### Add to Window Placement
 
