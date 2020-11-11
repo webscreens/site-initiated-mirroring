@@ -78,6 +78,10 @@ smart projector.
 
 ## Detailed design discussion
 
+This design option extends the [Presentation API](
+https://w3c.github.io/presentation-api/). Other design alternatives are 
+discussed below.
+
 ### Sample Code
 
 ```javascript
@@ -182,24 +186,30 @@ Playback than Presentation, given the latter is about setting up a separate
 receiver page and bidirectional communication between the controller and the 
 receiver pages.
 1. Configuring latency and audio playback does not apply to the existing use of 
-Presentation API, but it can for the existing use of Remote Playback.
+Presentation API, but it may for some implementations of the [media remoting](
+https://w3c.github.io/remote-playback/#dfn-media-remoting) case of Remote 
+Playback.
 
 Arguments against it:
-1. In the existing Remote Playback, we halt the local playback when it gets 
+1. During Remote Playback, we halt the local playback when it gets 
 activated, so that'd be inconsistent with self-mirroring, in which playback 
 happens simultaneously on both displays.
 1. Remote Playback is intended for media playback, and mirroring a page 
 is arguably conceptually different.
 
 Some implications of extending the Remote Playback API:
-1. It would mean that the user agent would let the page know whenever it’s 
-being tab mirrored (via `document.remote.onconnect`), even when mirroring is 
-initiated via the user agent's UI.
+1. It would mean that the user agent would likely want to let the page know
+whenever it’s being tab mirrored (via `document.remote.onconnect`), even when 
+mirroring is initiated via the user agent's UI.
 1. If both `document.remote.remote` and `navigator.presentation.defaultRequest` 
 are set, and the user agent's secondary display picker is shared between the 
 Remote Playback and Presentation APIs, one API would need to be chosen as the 
 default when the picker is shown through the user agent's UI (i.e. not through 
-`RemotePlayback#prompt()` or `PresentationRequest#start()`).
+`RemotePlayback#prompt()` or `PresentationRequest#start()`). We may want a
+way for the page to indicate its order of preference. There has also been a
+related discussion ([minutes](
+https://www.w3.org/2019/09/16-webscreens-minutes.html#x04)) regarding using the
+two APIs together.
 
 #### Sample code
 ```javascript
@@ -223,19 +233,9 @@ partial interface Document {
 };
 
 partial interface RemotePlayback {
+  // CaptureParameters is the same as in the Presentation API proposal.
   attribute CaptureParameters? captureParams;
 };
-
-// The below is the same as in the Presentation API proposal.
-
-dictionary CaptureParameters {
-  CaptureLatency latencyHint = 'default';
-  AudioPlaybackDestination audioPlayback = 'remote';
-};
-
-enum CaptureLatency { "default", "high", "low" };
-
-enum AudioPlaybackDestination { "remote", "local" };
 ```
 
 ### Add to Window Placement
