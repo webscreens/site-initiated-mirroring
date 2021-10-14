@@ -79,69 +79,66 @@ smart projector.
 ## Detailed design discussion
 
 This design option extends the [Presentation API](
-https://w3c.github.io/presentation-api/). Other design alternatives are 
+https://w3c.github.io/presentation-api/). Other design alternatives are
 discussed below.
 
 ### Sample Code
 
 ```javascript
 // The active mirroring session.
-var theConnection = null;
-
-// Define a PresentationRequest for mirroring.  Exact URL TBD.
-var request = new PresentationRequest("about:self");
+let connection = null;
 
 // Initial parameters for mirroring.
-var initialParams = { latencyHint: 'default', audioPlayback: 'remote' };
+const initialParams = { latencyHint: 'default', audioPlayback: 'remote' };
+
+// Define a PresentationRequest for mirroring.  Exact URL TBD.
+const request = new PresentationRequest("about:self", initialParams);
 
 // Presentation availability works the same as other URLs.
 // You can also set it as a default request in the top level frame.
 navigator.presentation.defaultRequest = request;
-navigator.presentation.defaultRequest.onconnectionavailable = function(evt) {
-    configureConnection(evt.connection);
-};
 
 // A button allowing initiation of site mirroring.
 // Starting a presentation works the same as other URLS.
-document.getElementById("mirrorBtn").onclick() = function() {
-    request.start().then(connection =>
-        configureConnection(connection, initialParams));
+document.getElementById("mirrorBtn").onclick() = async function() {
+  connection = await request.start();
 };
 
-// Configure mirroring parameters on the connection, if supported.
-function configureConnection(newConnection, params) {
-  var theConnection = newConnection;
+document.getElementById("changeConfigBtn").onclick() = function() {
+  const newParams = { latencyHint: 'low', audioPlayback: 'local' };
+
   // Can only update connections that are starting or active.
-  if (!(theConnection.state == 'connecting' ||
-        theConnection.state == 'connected')) {
-      return;
+  if (!(connection.state == 'connecting' ||
+        connection.state == 'connected')) {
+    return;
   }
 
   // Feature detect if capture parameters are supported.
-  if (!theConnection.captureParams) {
+  if (!connection.captureParams) {
     return;
   }
 
   // Update latency hint.
-  if (theConnection.captureParams.latencyHint
-      theConnection.captureParams.latencyHint != params.latencyHint) {
-      theConnection.captureParams.latencyHint = params.latencyHint;
+  if (connection.captureParams.latencyHint
+      connection.captureParams.latencyHint != newParams.latencyHint) {
+    connection.captureParams.latencyHint = newParams.latencyHint;
   }
 
   // Update audio capture.
-  if (theConnection.captureParams.audioPlayback &&
-      theConnection.captureParams.audioPlayback != params.audioPlayback) {
-      theConnection.captureParams.audioPlayback = params.audioPlayback;
+  if (connection.captureParams.audioPlayback &&
+      connection.captureParams.audioPlayback != newParams.audioPlayback) {
+    connection.captureParams.audioPlayback = newParams.audioPlayback;
   }
 }
-
-// Parameters can be changed while the connection state is "connected."
-// TODO: Show an example of how that can be done.
 ```
 
 ### IDL
 
 ```
+partial interface PresentationRequest {
+  constructor(sequence<USVString url> urls, CaptureParameters captureParams);
+}
+
 partial interface PresentationConnection {
   // Only non-null on a connection started by mirroring.
   attribute CaptureParameters captureParams = null;
@@ -161,50 +158,53 @@ enum AudioPlaybackDestination { "remote", "local" };
 
 There are several open questions to address:
 
-1. Whether navigation in the tab, within the same origin or to a different origin,
-should terminate the mirroring session.
+1. Whether navigation in the tab, within the same origin or to a different
+   origin, should terminate the mirroring session.
 1. Whether this API should be restricted to top-level frames.
 1. Whether there's a use case to play audio out locally and remotely at the same
-time.
+   time.
 1. Whether multiple URLs should be allowed in the PresentationRequest.
+1. Whether the parameters should be per-PresentationRequest or per-URL.
 1. The choice of token or URL to indicate self-mirroring as a presentation source.
 1. Whether captureParams should be available for other connection types (like 1-UA mode).
 1. How to handle messaging.
+1. Whether we want to make the parameters extensible to include non-mirroring
+   configurations as well.
 
 ## Considered alternatives
 
 ### Extend the Remote Playback API
 
-The [Remote Playback API](https://w3c.github.io/remote-playback/) is another 
-API that allows media contents to be played on a secondary display. Since it 
-currently only supports the playback of media elements, it would need to be 
+The [Remote Playback API](https://w3c.github.io/remote-playback/) is another
+API that allows media contents to be played on a secondary display. Since it
+currently only supports the playback of media elements, it would need to be
 extended to allow the remote playback of entire tab contents.
 
 Arguments in favor of extending the Remote Playback API:
-1. Sending a mirroring stream is arguably conceptually closer to Remote 
-Playback than Presentation, given the latter is about setting up a separate 
-receiver page and bidirectional communication between the controller and the 
+1. Sending a mirroring stream is arguably conceptually closer to Remote
+Playback than Presentation, given the latter is about setting up a separate
+receiver page and bidirectional communication between the controller and the
 receiver pages.
-1. Configuring latency and audio playback does not apply to the existing use of 
+1. Configuring latency and audio playback does not apply to the existing use of
 Presentation API, but it may for some implementations of the [media remoting](
-https://w3c.github.io/remote-playback/#dfn-media-remoting) case of Remote 
+https://w3c.github.io/remote-playback/#dfn-media-remoting) case of Remote
 Playback.
 
 Arguments against it:
-1. During Remote Playback, we halt the local playback when it gets 
-activated, so that'd be inconsistent with self-mirroring, in which playback 
+1. During Remote Playback, we halt the local playback when it gets
+activated, so that'd be inconsistent with self-mirroring, in which playback
 happens simultaneously on both displays.
-1. Remote Playback is intended for media playback, and mirroring a page 
+1. Remote Playback is intended for media playback, and mirroring a page
 is arguably conceptually different.
 
 Some implications of extending the Remote Playback API:
 1. It would mean that the user agent would likely want to let the page know
-whenever it’s being tab mirrored (via `document.remote.onconnect`), even when 
+whenever it’s being tab mirrored (via `document.remote.onconnect`), even when
 mirroring is initiated via the user agent's UI.
-1. If both `document.remote.remote` and `navigator.presentation.defaultRequest` 
-are set, and the user agent's secondary display picker is shared between the 
-Remote Playback and Presentation APIs, one API would need to be chosen as the 
-default when the picker is shown through the user agent's UI (i.e. not through 
+1. If both `document.remote.remote` and `navigator.presentation.defaultRequest`
+are set, and the user agent's secondary display picker is shared between the
+Remote Playback and Presentation APIs, one API would need to be chosen as the
+default when the picker is shown through the user agent's UI (i.e. not through
 `RemotePlayback#prompt()` or `PresentationRequest#start()`). We may want a
 way for the page to indicate its order of preference. There has also been a
 related discussion ([minutes](
@@ -268,11 +268,20 @@ Presentation API.
 
 ## Stakeholder Feedback / Opposition
 
-TBD
+The following features have been requested by websites that currently implement
+self-mirroring through the Cast Web SDK, some of which are currently outside the
+scope of this explainer (i.e. listed as non-goals):
+
+- Choosing whether the audio playback is done on the controller or the receiver
+  device
+- Limiting the available receivers to those with a specific set of capabilities
+  (e.g. audio output, video output)
+- Choosing whether to launch a presentation receiver page or self-mirroring
+  based on the receiver capabilities
+- Mirroring only a specific region (e.g. a DOM element) within a page
 
 ## References & acknowledgements
 
 Many thanks for valuable feedback and advice from:
 
-Takumi Fujimoto [<takumif@google.com>](mailto:takumif@google.com]
-
+Takumi Fujimoto [<takumif@google.com>](mailto:takumif@google.com)
