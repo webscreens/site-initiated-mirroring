@@ -86,7 +86,7 @@ discussed below.
 
 ```javascript
 // The active mirroring session.
-let connection = null;
+let theConnection = null;
 
 // Initial parameters for mirroring.
 const initialParams = { latencyHint: 'default', audioPlayback: 'remote' };
@@ -101,33 +101,33 @@ navigator.presentation.defaultRequest = request;
 // A button allowing initiation of site mirroring.
 // Starting a presentation works the same as other URLS.
 document.getElementById("mirrorBtn").onclick() = async function() {
-  connection = await request.start();
+  theConnection = await request.start();
 };
 
 document.getElementById("changeConfigBtn").onclick() = function() {
   const newParams = { latencyHint: 'low', audioPlayback: 'local' };
 
   // Can only update connections that are starting or active.
-  if (!(connection.state == 'connecting' ||
-        connection.state == 'connected')) {
+  if (!(theConnection.state == 'connecting' ||
+        theConnection.state == 'connected')) {
     return;
   }
 
   // Feature detect if capture parameters are supported.
-  if (!connection.captureParams) {
+  if (!theConnection.captureParams) {
     return;
   }
 
   // Update latency hint.
-  if (connection.captureParams.latencyHint
-      connection.captureParams.latencyHint != newParams.latencyHint) {
-    connection.captureParams.latencyHint = newParams.latencyHint;
+  if (theConnection.captureParams.latencyHint
+      theConnection.captureParams.latencyHint != newParams.latencyHint) {
+    theConnection.captureParams.latencyHint = newParams.latencyHint;
   }
 
   // Update audio capture.
-  if (connection.captureParams.audioPlayback &&
-      connection.captureParams.audioPlayback != newParams.audioPlayback) {
-    connection.captureParams.audioPlayback = newParams.audioPlayback;
+  if (theConnection.captureParams.audioPlayback &&
+      theConnection.captureParams.audioPlayback != newParams.audioPlayback) {
+    theConnection.captureParams.audioPlayback = newParams.audioPlayback;
   }
 }
 ```
