@@ -42,6 +42,8 @@ secondary displays as well.
 - Allow the site to control whether to also capture the tab's audio while
   mirroring.
 - Allow the capture settings to be changed while mirroring is on-going.
+- Design the API in such a way that it can be extended to accommodate more
+  mirroring and non-mirroring configurations in the future.
 
 ## Non-goals
 
@@ -85,14 +87,15 @@ discussed below.
 ### Sample Code
 
 ```javascript
-// The active mirroring session.
-let theConnection = null;
+// The active presentation session.
+let connection = null;
 
-// Initial parameters for mirroring.
-const initialParams = { latencyHint: 'default', audioPlayback: 'remote' };
-
-// Define a PresentationRequest for mirroring.  Exact URL TBD.
-const request = new PresentationRequest("about:self", initialParams);
+const request = new PresentationRequest([{
+  // Mirroring URL, the exact URL TBD.
+  url: 'about:self',
+  captureLatency: 'low',
+  audioPlayback: 'remote',
+}]);
 
 // Presentation availability works the same as other URLs.
 // You can also set it as a default request in the top level frame.
@@ -100,34 +103,33 @@ navigator.presentation.defaultRequest = request;
 
 // A button allowing initiation of site mirroring.
 // Starting a presentation works the same as other URLS.
-document.getElementById("mirrorBtn").onclick() = async function() {
-  theConnection = await request.start();
+document.getElementById('mirrorBtn').onclick() = async function() {
+  connection = await request.start();
 };
 
-document.getElementById("changeConfigBtn").onclick() = function() {
+document.getElementById('changeConfigBtn').onclick() = function() {
   const newParams = { latencyHint: 'low', audioPlayback: 'local' };
 
   // Can only update connections that are starting or active.
-  if (!(theConnection.state == 'connecting' ||
-        theConnection.state == 'connected')) {
+  if (!(connection.state == 'connecting' ||
+        connection.state == 'connected')) {
     return;
   }
 
-  // Feature detect if capture parameters are supported.
-  if (!theConnection.captureParams) {
+  if (connection.url != 'about:self') {
     return;
   }
 
   // Update latency hint.
-  if (theConnection.captureParams.latencyHint
-      theConnection.captureParams.latencyHint != newParams.latencyHint) {
-    theConnection.captureParams.latencyHint = newParams.latencyHint;
+  if (connection.source.latencyHint
+      connection.source.latencyHint != newParams.latencyHint) {
+    connection.source.latencyHint = newParams.latencyHint;
   }
 
   // Update audio capture.
-  if (theConnection.captureParams.audioPlayback &&
-      theConnection.captureParams.audioPlayback != newParams.audioPlayback) {
-    theConnection.captureParams.audioPlayback = newParams.audioPlayback;
+  if (connection.source.audioPlayback &&
+      connection.source.audioPlayback != newParams.audioPlayback) {
+    connection.source.audioPlayback = newParams.audioPlayback;
   }
 }
 ```
@@ -136,18 +138,18 @@ document.getElementById("changeConfigBtn").onclick() = function() {
 
 ```
 partial interface PresentationRequest {
-  constructor(sequence<USVString url> urls, CaptureParameters captureParams);
+  constructor(sequence<PresentationSource> sources);
 }
 
 partial interface PresentationConnection {
-  // Only non-null on a connection started by mirroring.
-  attribute CaptureParameters captureParams = null;
+  attribute PresentationSource source;
 };
 
-dictionary CaptureParameters {
-  CaptureLatency latencyHint = 'default';
-  AudioPlaybackDestination audioPlayback = 'remote';
-};
+dictionary PresentationSource {
+  USVString url;
+  CaptureLatency? latencyHint = 'default';
+  AudioPlaybackDestination? audioPlayback = 'remote';
+}
 
 enum CaptureLatency { "default", "high", "low" };
 
@@ -163,15 +165,32 @@ There are several open questions to address:
 1. Whether this API should be restricted to top-level frames.
 1. Whether there's a use case to play audio out locally and remotely at the same
    time.
-1. Whether multiple URLs should be allowed in the PresentationRequest.
-1. Whether the parameters should be per-PresentationRequest or per-URL.
-1. The choice of token or URL to indicate self-mirroring as a presentation source.
-1. Whether captureParams should be available for other connection types (like 1-UA mode).
+1. The choice of token or URL to indicate self-mirroring as a presentation
+   source.
 1. How to handle messaging.
-1. Whether we want to make the parameters extensible to include non-mirroring
-   configurations as well.
 
 ## Considered alternatives
+
+### Have one configuration for all the Presentation URLs
+
+Another possible way to extend the Presentation API is to have one set of
+parameters per PresentationRequest, as shown:
+
+```
+partial interface PresentationRequest {
+  constructor(sequence<USVString url> urls, CaptureParameters captureParams);
+}
+
+dictionary CaptureParameters {
+  CaptureLatency latencyHint = 'default';
+  AudioPlaybackDestination audioPlayback = 'remote';
+};
+```
+
+An upside of this approach is that the proposed constructor is more in line with
+the existing ones. A downside is that this approach cannot be extended in the
+future to accomodate per-URL configurations such as device capability
+requirements.
 
 ### Extend the Remote Playback API
 
