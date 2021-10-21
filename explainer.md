@@ -6,6 +6,10 @@ mark a. foltz [@mfoltzgoogle](https://github.com/mfoltzgoogle)
 
 [<mfoltz@google.com>](mailto:mfoltz@google.com)
 
+Takumi Fujimoto [@takumif](https://github.com/takumif)
+
+[<takumif@google.com>](mailto:takumif@google.com)
+
 ## Participate
 
 - [Latest Draft](https://mfoltzgoogle.github.io/tab-self-mirroring/explainer.html)
@@ -87,7 +91,7 @@ discussed below.
 ### Sample Code
 
 ```javascript
-// The active presentation session.
+// The active mirroring session.
 let connection = null;
 
 const request = new PresentationRequest([{
@@ -298,9 +302,3 @@ scope of this explainer (i.e. listed as non-goals):
 - Choosing whether to launch a presentation receiver page or self-mirroring
   based on the receiver capabilities
 - Mirroring only a specific region (e.g. a DOM element) within a page
-
-## References & acknowledgements
-
-Many thanks for valuable feedback and advice from:
-
-Takumi Fujimoto [<takumif@google.com>](mailto:takumif@google.com)
