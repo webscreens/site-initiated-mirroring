@@ -47,7 +47,8 @@ secondary displays as well.
   mirroring.
 - Allow the capture settings to be changed while mirroring is on-going.
 - Design the API in such a way that it can be extended to accommodate more
-  mirroring and non-mirroring configurations in the future.
+  mirroring and non-mirroring configurations in the future. See the stakeholder
+  feedback section below for possible future extensions.
 
 ## Non-goals
 
@@ -95,8 +96,9 @@ discussed below.
 let connection = null;
 
 const request = new PresentationRequest([{
-  // Mirroring URL, the exact URL TBD.
-  url: 'about:self',
+  // A special string to indicate mirroring instead of a presentation receiver
+  // URL, the exact string TBD.
+  url: '_self',
   captureLatency: 'low',
   audioPlayback: 'remote',
 }]);
@@ -120,7 +122,7 @@ document.getElementById('changeConfigBtn').onclick() = function() {
     return;
   }
 
-  if (connection.url != 'about:self') {
+  if (connection.url != '_self') {
     return;
   }
 
@@ -147,16 +149,29 @@ partial interface PresentationRequest {
 
 partial interface PresentationConnection {
   attribute PresentationSource source;
+  [deprecated] readonly attribute USVString url;
 };
 
 dictionary PresentationSource {
   USVString url;
-  CaptureLatency? latencyHint = 'default';
-  AudioPlaybackDestination? audioPlayback = 'remote';
+  CaptureLatency? latencyHint = "default";
+  AudioPlaybackDestination? audioPlayback = "remote";
 }
 
-enum CaptureLatency { "default", "high", "low" };
+// Indicates the preferred tradeoff between low latency and smooth streaming.
+// The actual behavior is implementation specific. Only applies to mirroring
+// sessions.
+enum CaptureLatency {
+  "default",
+  // Having a smooth stream is prioritized over having a low latency.
+  "high",
+  // Having a low latency is prioritized over having a smooth stream.
+  "low",
+};
 
+// Indicates where the audio playback should occur. Only applies to mirroring
+// sessions.
+// TODO: Should we use the terms "receiver" and "controller" instead?
 enum AudioPlaybackDestination { "remote", "local" };
 ```
 
