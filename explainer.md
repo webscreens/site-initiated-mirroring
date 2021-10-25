@@ -100,7 +100,7 @@ const request = new PresentationRequest([{
   // URL, the exact string TBD.
   url: '_self',
   captureLatency: 'low',
-  audioPlayback: 'remote',
+  audioPlayback: 'receiver',
 }]);
 
 // Presentation availability works the same as other URLs.
@@ -114,7 +114,7 @@ document.getElementById('mirrorBtn').onclick() = async function() {
 };
 
 document.getElementById('changeConfigBtn').onclick() = function() {
-  const newParams = { latencyHint: 'low', audioPlayback: 'local' };
+  const newParams = { latencyHint: 'low', audioPlayback: 'controller' };
 
   // Can only update connections that are starting or active.
   if (!(connection.state == 'connecting' ||
@@ -153,14 +153,14 @@ partial interface PresentationConnection {
 };
 
 dictionary PresentationSource {
-  USVString url;
+  readonly USVString url;
   CaptureLatency? latencyHint = "default";
-  AudioPlaybackDestination? audioPlayback = "remote";
+  AudioPlaybackDestination? audioPlayback = "receiver";
 }
 
 // Indicates the preferred tradeoff between low latency and smooth streaming.
 // The actual behavior is implementation specific. Only applies to mirroring
-// sessions.
+// sources.
 enum CaptureLatency {
   "default",
   // Having a smooth stream is prioritized over having a low latency.
@@ -170,9 +170,8 @@ enum CaptureLatency {
 };
 
 // Indicates where the audio playback should occur. Only applies to mirroring
-// sessions.
-// TODO: Should we use the terms "receiver" and "controller" instead?
-enum AudioPlaybackDestination { "remote", "local" };
+// sources.
+enum AudioPlaybackDestination { "receiver", "controller" };
 ```
 
 ### Open Questions
@@ -259,7 +258,7 @@ document.querySelector('#mirrorBtn').addEventListener('click', () => {
 document.remote.addEventListener('connect', event => {
   if (event.target.captureParams) {
     document.remote.captureParams.latencyHint = 'low';
-    document.remote.captureParams.audioPlayback = 'local';
+    document.remote.captureParams.audioPlayback = 'controller';
   }
 });
 ```
