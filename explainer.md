@@ -183,7 +183,7 @@ There are several open questions to address:
 1. Whether this API should be restricted to top-level frames.
 1. Whether there's a use case to play audio out locally and remotely at the same
    time.
-1. The choice of token or URL to indicate self-mirroring as a presentation
+1. The choice of token or URL to indicate mirroring as a presentation
    source.
 1. How to handle messaging.
 
@@ -229,8 +229,8 @@ Playback.
 
 Arguments against it:
 1. During Remote Playback, we halt the local playback when it gets
-activated, so that'd be inconsistent with self-mirroring, in which playback
-happens simultaneously on both displays.
+activated, so that'd be inconsistent with site initiated mirroring, in which
+playback happens simultaneously on both displays.
 1. Remote Playback is intended for media playback, and mirroring a page
 is arguably conceptually different.
 
@@ -306,13 +306,13 @@ Presentation API.
 ## Stakeholder Feedback / Opposition
 
 The following features have been requested by websites that currently implement
-self-mirroring through the Cast Web SDK, some of which are currently outside the
-scope of this explainer (i.e. listed as non-goals):
+site initiated mirroring through the Cast Web SDK, some of which are currently
+outside the scope of this explainer (i.e. listed as non-goals):
 
 - Choosing whether the audio playback is done on the controller or the receiver
   device
 - Limiting the available receivers to those with a specific set of capabilities
   (e.g. audio output, video output)
-- Choosing whether to launch a presentation receiver page or self-mirroring
-  based on the receiver capabilities
+- Choosing whether to launch a presentation receiver page or site initiated
+  mirroring based on the receiver capabilities
 - Mirroring only a specific region (e.g. a DOM element) within a page
