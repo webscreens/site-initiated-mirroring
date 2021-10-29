@@ -1,4 +1,4 @@
-# Tab Self Mirroring API
+# Site Initiated Mirroring API
 
 ## Authors
 
