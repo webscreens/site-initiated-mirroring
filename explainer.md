@@ -12,9 +12,9 @@ Takumi Fujimoto [@takumif](https://github.com/takumif)
 
 ## Participate
 
-- [Latest Draft](https://mfoltzgoogle.github.io/tab-self-mirroring/explainer.html)
-- [GitHub Repository](https://github.com/mfoltzgoogle/tab-self-mirroring)
-- [File an Issue](https://github.com/mfoltzgoogle/tab-self-mirroring/issues)
+- [Latest Draft](https://github.com/webscreens/site-initiated-mirroring/blob/main/explainer.md)
+- [GitHub Repository](https://github.com/webscreens/site-initiated-mirroring)
+- [File an Issue](https://github.com/webscreens/site-initiated-mirroring/issues)
 
 ## Introduction
 
