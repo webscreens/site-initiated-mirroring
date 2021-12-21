@@ -187,6 +187,29 @@ There are several open questions to address:
    source.
 1. How to handle messaging.
 
+## Security and privacy considerations
+
+See [the corresponding section](
+https://w3c.github.io/presentation-api/#security-and-privacy-considerations) of
+the Presentation API spec. Below, we list characteristics unique to site
+initiated mirroring.
+
+### Personally identifiable information
+
+By [monitoring the list of available presentation displays](
+https://w3c.github.io/presentation-api/#monitoring-the-list-of-available-presentation-displays),
+a website can determine whether the user has devices compatible with mirroring,
+which is one new bit of information that can be used for fingerprinting. This
+bit however would likely strongly correlate with whether the user has devices
+compatible with the existing modes of Presentation API, which is a bit that is
+already exposed.
+
+### Cross-origin access
+
+The proposed API will not grant access to the captured video stream to either
+the controlling context initiating site initiated mirroring or other controlling
+contexts that join (`reconnect()` to) an existing mirroring session.
+
 ## Considered alternatives
 
 ### Have one configuration for all the Presentation URLs
