@@ -208,7 +208,8 @@ already exposed.
 
 The proposed API will not grant access to the captured video stream to either
 the controlling context initiating site initiated mirroring or other controlling
-contexts that join (`reconnect()` to) an existing mirroring session.
+contexts that join (i.e. `reconnect()` to) an existing mirroring session, so no
+new cross-origin access or information is provided through the proposed API.
 
 ## Considered alternatives
 
