@@ -1,4 +1,5 @@
-# Site Initiated Mirroring API
+Below, we list characteristics unique to site
+initiated mirroring.# Site Initiated Mirroring API
 
 ## Authors
 
@@ -191,25 +192,33 @@ There are several open questions to address:
 
 See [the corresponding section](
 https://w3c.github.io/presentation-api/#security-and-privacy-considerations) of
-the Presentation API spec. Below, we list characteristics unique to site
-initiated mirroring.
+the Presentation API spec.
+
+The section on private browsing modes does not apply because there is no
+presentation page that is in a separate browsing context. The section on
+messaging also does not apply because there is no presentation page to receive
+messages.
 
 ### Personally identifiable information
 
 By [monitoring the list of available presentation displays](
 https://w3c.github.io/presentation-api/#monitoring-the-list-of-available-presentation-displays),
-a website can determine whether the user has devices compatible with mirroring,
-which is one new bit of information that can be used for fingerprinting. This
-bit however would likely strongly correlate with whether the user has devices
-compatible with the existing modes of Presentation API, which is a bit that is
-already exposed.
+a website can determine whether the user has presentation displays compatible
+with mirroring, which is one new bit of information that can be used for
+fingerprinting. However, nearly all presentation displays support mirroring, so
+this additional information does not add significantly to the fingerprinting
+surface of the API.
 
-### Cross-origin access
+A mirroring presentation URL is not a DIAL URL, so it cannot be used to probe
+information about DIAL app support on presentation displays.
 
-The proposed API will not grant access to the captured video stream to either
+### Cross-origin and cross-device access
+
+The proposed API will not grant access to the mirrored content to either
 the controlling context initiating site initiated mirroring or other controlling
 contexts that join (i.e. `reconnect()` to) an existing mirroring session, so no
-new cross-origin access or information is provided through the proposed API.
+new cross-origin or cross-device access to information is provided through the
+proposed API.
 
 ## Considered alternatives
 
