@@ -1,5 +1,4 @@
-Below, we list characteristics unique to site
-initiated mirroring.# Site Initiated Mirroring API
+# Site Initiated Mirroring API
 
 ## Authors
 
