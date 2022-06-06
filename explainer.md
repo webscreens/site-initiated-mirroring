@@ -198,6 +198,9 @@ presentation page that is in a separate browsing context. The section on
 messaging also does not apply because there is no presentation page to receive
 messages.
 
+Also see the
+[security and privacy self-review page](security_and_privacy_self_review.md).
+
 ### Personally identifiable information
 
 By [monitoring the list of available presentation displays](
