@@ -144,7 +144,10 @@ document.getElementById('changeConfigBtn').onclick() = function() {
 
 ```
 partial interface PresentationRequest {
-  constructor(sequence<PresentationSource> sources);
+  // This constructor replaces
+  //   constructor(sequence<USVString> urls);
+  // in the current Presentation API spec.
+  constructor(sequence<(USVString or PresentationSource)> sources);
 }
 
 partial interface PresentationConnection {
