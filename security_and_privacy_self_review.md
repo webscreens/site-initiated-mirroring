@@ -1,7 +1,9 @@
-# Security & privacy self-review for site-initiated mirroring
+# Security & privacy self-review for the Site-Initiated Mirroring API
 
-The questions are taken from
-https://www.w3.org/TR/security-privacy-questionnaire.
+See [explainer.md](explainer.md) for the API's main explainer.
+
+These questions are taken from
+[this questionnaire](https://www.w3.org/TR/security-privacy-questionnaire).
 
 ## Authors
 
@@ -28,8 +30,12 @@ Yes. We don't expose the number or the name of the available devices.
 
 Existing Presentation API reduces PII exposure by showing the available list of
 devices (device names could contain people's names) in native UI and not
-exposing them to the webiste. Site-initiated mirroring, which extends the
+exposing them to the website. Site-initiated mirroring, which extends the
 Presentation API, uses the same mechanism.
+
+By having the user agent provide the receiver picker UI, it limits the set of
+receivers that can show the mirrored contents (which can potentially contain
+sensitive information) to those that it trusts.
 
 ## 2.4 How do the features in your specification deal with sensitive information?
 
@@ -69,14 +75,15 @@ activation.
 
 ## 2.12 What temporary identifiers do the features in this specification create or expose to the web?
 
-Starting a mirroring session creates a `PresentationConnection` object with an
-ID, but the ID can be obtained only at creation and cannot be used to
-re-correlate a user.
+Starting a mirroring session creates a `PresentationConnection` object with
+[a presentation identifier](https://w3c.github.io/presentation-api/#dfn-presentation-identifier),
+but the ID can be obtained only at creation and the user agent can create an ID
+that does not reveal any information about the user or the browsing state.
 
 ## 2.13 How does this specification distinguish between behavior in first-party and third-party contexts?
 
 The existing Presentation API spec requires the user agent's native device
-picker UI to show the origgin that is requesting to present
+picker UI to show the origin that is requesting to present
 ([link](https://w3c.github.io/presentation-api/#user-interface-guidelines)), so
 that the user would know what origin is requesting. The content that is mirrored
 is the top-level browsing context regarding of which browsing context is
@@ -107,7 +114,7 @@ mirroring session:
   non-"fully active" document.
 
 - When the user navigates away from a document (i.e. when the document is no
-  longer fully active) the mirroring session is termianted.
+  longer fully active) the mirroring session is terminated.
 
 ## 2.18 What should this questionnaire have asked?
 
