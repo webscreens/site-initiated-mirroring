@@ -15,12 +15,16 @@ These questions are taken from
 A website would be able to query (get events fired containing a boolean) whether
 the user has devices on the local network that support being a receiver for
 site-initiated mirroring (e.g a Chromecast device). Note that it could already
-query for devices that support existing uses of Presentation API (launching a
-web app by URL), and those sets of devices overlap for the most part.
+query for devices that support existing uses of Presentation API (i.e. launching
+a web app by URL), and given the capabilities of the receiver hardware currently
+on the market, it is likely that the information that can be obtained today
+already contains the information that's newly exposed through site-initiated
+mirroring, although that may change with the introduction of new receiver
+hardware with different capability combinations.
 
 This is needed for a website to be able to tell when it should show UI to allow
 users to initiate site-initiated mirroring -- it wouldn't be desirable for the
-user to click through just to find that they have no compatible devices.
+user to click through just to find out that they have no compatible devices.
 
 ## 2.2 Do features in your specification expose the minimum amount of information necessary to enable their intended uses?
 
