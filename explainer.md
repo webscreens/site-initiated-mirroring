@@ -22,6 +22,11 @@ We're proposing an API to allow Web pages to request mirroring themselves to a
 secondary display.  They will be allowed to request customization of the
 mirroring implementation in certain respects.
 
+A secondary display is primarily a device on the local network connected
+wirelessly through technologies such as Chromecast or AirPlay, but may also be
+physically connected, such as through HDMI. Devices outside the LAN (i.e. in a
+WAN) are outside the scope of this spec.
+
 There exist two APIs to allow Web sites to share content with a seconary
 display.  The [Presentation API](https://w3c.github.io/presentation-api/) allows
 the site to request the secondary display show an entirely new document.  The
