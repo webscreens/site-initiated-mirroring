@@ -12,21 +12,15 @@ These questions are taken from
 
 ## 2.1 What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
-A website would be able to query (get events fired containing a boolean) whether
-the user has devices on the local network that support being a receiver for
-site-initiated mirroring (e.g a Chromecast device). Note that it could already
-query for devices that support existing uses of Presentation API (i.e. launching
-a web app by URL), and given the capabilities of the receiver hardware currently
-on the market, the information that can be obtained today already contains the
-information that's newly exposed through site-initiated mirroring, although that
-may change with the introduction of new receiver hardware with different
-capability combinations, e.g. a receiver device that supports mirroring but not
-URL presentations.
+The Presentation API allows a website to query whether a user has any devices
+that support launching presentations on the local network by creating a
+`PresentationAvailability` object.  Websites that want to initiate mirroring can
+use this object to decide whether to show a button to users when a compatible
+device is available.
 
-The exposure of this information is needed for a website to be able to tell when
-it should show UI to allow users to initiate site-initiated mirroring -- it
-wouldn't be desirable for the user to click through just to find out that they
-have no compatible devices.
+Today, all presentation receiver devices support site-initiated mirroring, so
+websites cannot gain any new information by requesting the availability of
+presentation receiver devices for site-initiated mirroring.
 
 ## 2.2 Do features in your specification expose the minimum amount of information necessary to enable their intended uses?
 
