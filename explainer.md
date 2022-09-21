@@ -101,9 +101,7 @@ discussed below.
 let connection = null;
 
 const request = new PresentationRequest([{
-  // A special string to indicate mirroring instead of a presentation receiver
-  // URL, the exact string TBD.
-  url: '_self',
+  type: 'mirroring',
   captureLatency: 'low',
   audioPlayback: 'receiver',
 }]);
@@ -127,7 +125,7 @@ document.getElementById('changeConfigBtn').onclick() = function() {
     return;
   }
 
-  if (connection.url != '_self') {
+  if (connection.type != 'mirroring') {
     return;
   }
 
@@ -147,7 +145,7 @@ document.getElementById('changeConfigBtn').onclick() = function() {
 
 ### IDL
 
-```
+```webidl
 partial interface PresentationRequest {
   // This constructor replaces
   //   constructor(sequence<USVString> urls);
@@ -161,10 +159,20 @@ partial interface PresentationConnection {
 };
 
 dictionary PresentationSource {
-  readonly USVString url;
+  required PresentationSourceType type;
+
+  // Used if `type` is "url".
+  USVString? url;
+
+  // Used if `type` is "mirroring".
   CaptureLatency? latencyHint = "default";
   AudioPlaybackDestination? audioPlayback = "receiver";
 }
+
+enum PresentationSourceType {
+  "url",
+  "mirroring",
+};
 
 // Indicates the preferred tradeoff between low latency and smooth streaming.
 // The actual behavior is implementation specific. Only applies to mirroring
