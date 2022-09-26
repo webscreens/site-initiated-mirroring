@@ -154,10 +154,20 @@ partial interface PresentationRequest {
 }
 
 partial interface PresentationConnection {
-  attribute PresentationSource source;
-  [deprecated] readonly attribute USVString url;
+  readonly attribute PresentationSourceType type;
+
+  // Used if `type` is "url".
+  readonly attribute USVString? url;
+
+  // Used if `type` is "mirroring".
+  attribute CaptureLatency? latencyHint;
+  attribute AudioPlaybackDestination? audioPlayback;
 };
 
+// Fields are duplicated between PresentationConnection and PresentationSource
+// because a dictionary (PresentationSource) cannot be an attribute, and we'd
+// like for PresentationSource to be a dictionary rather than an interface to
+// avoid callers having to explicitly call its constructor.
 dictionary PresentationSource {
   required PresentationSourceType type;
 
