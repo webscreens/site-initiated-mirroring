@@ -130,15 +130,13 @@ document.getElementById('changeConfigBtn').onclick() = function() {
   }
 
   // Update latency hint.
-  if (connection.source.latencyHint
-      connection.source.latencyHint != newParams.latencyHint) {
-    connection.source.latencyHint = newParams.latencyHint;
+  if (connection.latencyHint != newParams.latencyHint) {
+    connection.latencyHint = newParams.latencyHint;
   }
 
   // Update audio capture.
-  if (connection.source.audioPlayback &&
-      connection.source.audioPlayback != newParams.audioPlayback) {
-    connection.source.audioPlayback = newParams.audioPlayback;
+  if (connection.audioPlayback != newParams.audioPlayback) {
+    connection.audioPlayback = newParams.audioPlayback;
   }
 }
 ```
