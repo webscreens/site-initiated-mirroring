@@ -182,13 +182,11 @@ enum AudioPlaybackDestination { "receiver", "controller" };
 There are several open questions to address:
 
 1. Whether navigation in the tab, within the same origin or to a different
-   origin, should terminate the mirroring session.
-1. Whether this API should be restricted to top-level frames.
+   origin, should terminate the mirroring session. (#7)
+1. Whether this API should be restricted to top-level frames. (#8)
 1. Whether there's a use case to play audio out locally and remotely at the same
-   time.
-1. The choice of token or URL to indicate mirroring as a presentation
-   source.
-1. How to handle messaging.
+   time. (#9)
+1. How to handle messaging. (#10)
 
 ## Security and privacy considerations
 
