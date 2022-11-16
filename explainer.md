@@ -154,7 +154,7 @@ partial interface PresentationRequest {
 partial interface PresentationConnection {
   readonly attribute PresentationSourceType type;
 
-  // Used if `type` is "url".
+  // Used if `type` is "url". Is an empty string otherwise.
   readonly attribute USVString url;
 
   // Used if `type` is "mirroring".
