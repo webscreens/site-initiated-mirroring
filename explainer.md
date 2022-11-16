@@ -155,7 +155,7 @@ partial interface PresentationConnection {
   readonly attribute PresentationSourceType type;
 
   // Used if `type` is "url".
-  readonly attribute USVString? url;
+  readonly attribute USVString url;
 
   // Used if `type` is "mirroring".
   attribute CaptureLatency? latencyHint;
