@@ -2,7 +2,7 @@
 
 ## Authors
 
-mark a. foltz [@mfoltzgoogle](https://github.com/mfoltzgoogle)
+mark a. foltz [@markafoltz](https://github.com/markafoltz)
 
 [<mfoltz@google.com>](mailto:mfoltz@google.com)
 
