@@ -101,9 +101,7 @@ discussed below.
 let connection = null;
 
 const request = new PresentationRequest([{
-  // A special string to indicate mirroring instead of a presentation receiver
-  // URL, the exact string TBD.
-  url: '_self',
+  type: 'mirroring',
   captureLatency: 'low',
   audioPlayback: 'receiver',
 }]);
@@ -127,27 +125,25 @@ document.getElementById('changeConfigBtn').onclick() = function() {
     return;
   }
 
-  if (connection.url != '_self') {
+  if (connection.type != 'mirroring') {
     return;
   }
 
   // Update latency hint.
-  if (connection.source.latencyHint
-      connection.source.latencyHint != newParams.latencyHint) {
-    connection.source.latencyHint = newParams.latencyHint;
+  if (connection.latencyHint != newParams.latencyHint) {
+    connection.latencyHint = newParams.latencyHint;
   }
 
   // Update audio capture.
-  if (connection.source.audioPlayback &&
-      connection.source.audioPlayback != newParams.audioPlayback) {
-    connection.source.audioPlayback = newParams.audioPlayback;
+  if (connection.audioPlayback != newParams.audioPlayback) {
+    connection.audioPlayback = newParams.audioPlayback;
   }
 }
 ```
 
 ### IDL
 
-```
+```webidl
 partial interface PresentationRequest {
   // This constructor replaces
   //   constructor(sequence<USVString> urls);
@@ -156,15 +152,35 @@ partial interface PresentationRequest {
 }
 
 partial interface PresentationConnection {
-  attribute PresentationSource source;
-  [deprecated] readonly attribute USVString url;
+  readonly attribute PresentationSourceType type;
+
+  // Used if `type` is "url". Is an empty string otherwise.
+  readonly attribute USVString url;
+
+  // Used if `type` is "mirroring".
+  attribute CaptureLatency? latencyHint;
+  attribute AudioPlaybackDestination? audioPlayback;
 };
 
+// Fields are duplicated between PresentationConnection and PresentationSource
+// because a dictionary (PresentationSource) cannot be an attribute, and we'd
+// like for PresentationSource to be a dictionary rather than an interface to
+// avoid callers having to explicitly call its constructor.
 dictionary PresentationSource {
-  readonly USVString url;
+  required PresentationSourceType type;
+
+  // Used if `type` is "url".
+  USVString? url;
+
+  // Used if `type` is "mirroring".
   CaptureLatency? latencyHint = "default";
   AudioPlaybackDestination? audioPlayback = "receiver";
 }
+
+enum PresentationSourceType {
+  "url",
+  "mirroring",
+};
 
 // Indicates the preferred tradeoff between low latency and smooth streaming.
 // The actual behavior is implementation specific. Only applies to mirroring
